@@ -1,54 +1,53 @@
+from __future__ import print_function
 from pyspark import SparkConf, SparkContext
 from pyspark import HiveContext
-from __future__ import print_function
+from functools import partial
+import sys
+import math
 
+conf = SparkConf().setAppName('bdanalytic').setMaster('local[*]')
+sc = SparkContext(conf=conf)
 
-boroughcat = ['manhattan','brooklyn','bronx','queens','staten island']
+# boroughcat = ['manhattan','brooklyn','bronx','queens','staten island']
 timecat = ['morning', 'afternoon', 'evening', 'latenight']
-#Can use for v2 as well
-v1typecat = ['passenger vehicle,motorcycle,van,other,unknown,bus,taxi,bicycle,pick-up truck,livery vehicle,ambulance,fire truck,scooter,pedicab']
-v1factorcat = ['driver inattention/distraction','failure to yield right-of-way','fatigued/drowsy','turning improperly','driver inexperience','pavement slippery','alcohol involvement','view obstructed/limited','aggressive driving/road rage','brakes defective','obstruction/debris','pavement defective','lane marking improper/inadequate']
+timeseason = ['spring','summer','fall','winter']
+# v1typecat = ['passenger vehicle,motorcycle,van,other,unknown,bus,taxi,bicycle,pick-up truck,livery vehicle,ambulance,fire truck,scooter,pedicab']
+# v1factorcat = ['driver inattention/distraction','failure to yield right-of-way','fatigued/drowsy','turning improperly','driver inexperience','pavement slippery','alcohol involvement','view obstructed/limited','aggressive driving/road rage','brakes defective','obstruction/debris','pavement defective','lane marking improper/inadequate']
 
 accidentDataFrame = HiveContext(sc).sql('select * from accident')
 streetDataFrame = HiveContext(sc).sql('select * from street')
 
+def deg2rad(degrees):
+     radians = math.pi * degrees / 180
+     return radians
 
-def processStreetRow(streetDataFrame):
-     startx = streetDataFrame['startx']
-     starty = streetDataFrame['starty']
-     endx = streetDataFrame['endx']
-     endy = streetDataFrame['endy']
-     length = streetDataFrame['length']
-     #segmentid = streetDataFrame['segmentid']
-     width = streetDataFrame['width']
-     #usageclass = streetDataFrame['usageclass']
-     #rating = streetDataFrame['rating']
-     wordrating = streetDataFrame['wordrating']
-     #isvalid = streetDataFrame['isvalid']
-     return (startx,starty,endx,endy,length,width,wordrating)
-     
+def rad2deg(radians):
+     degrees = 180 * radians / math.pi
+     return degrees
 
-def processAccidentRow(accidentDataFrame):
-     accidentdate = accidentDataFrame['accidentdate']
-     accidenttime = accidentDataFrame['accidenttime']
-     borough = accidentDataFrame['borough']
-     zipcode = accidentDataFrame['zipcode']
-     latitude = accidentDataFrame['latitude']
-     longitude = accidentDataFrame['longitude']
-     onstreet = accidentDataFrame['onstreet']
-     crossstreet = accidentDataFrame['crossstreet']
-     personsinjured = accidentDataFrame['personsinjured']
-     personskilled = accidentDataFrame['personskilled']
-     pedestriansinjured = accidentDataFrame['pedestriansinjured']
-     pedestrianskilled = accidentDataFrame['pedestrianskilled']
-     cyclistsinjured = accidentDataFrame['cyclistsinjured']
-     cyclistskilled = accidentDataFrame['cyclistskilled']
-     motoristsinjured = accidentDataFrame['motoristsinjured']
-     motoristskilled = accidentDataFrame['motoristskilled']
-     v1factor = accidentDataFrame['v1factor']
-     v2factor = accidentDataFrame['v2factor']
-     v1type = accidentDataFrame['v1type']
-     v2type = accidentDataFrame['v2type']
+# streetbroadcast = sc.broadcast(streetDataFrame.rdd.collect())
+
+streetcollection = streetDataFrame.rdd.collect()
+
+def pre_cluster_prepare(row_data):
+     split = row_data.split(',')
+     #print(split[1],split[2],split[6],split[8],split[9], split[20])
+     return(split[1],split[2],split[6],split[8],split[9], split[16],split[20])
+
+def modifyAndJoin(accidentRow,threshold):
+     #Season Comparison Code
+     accidentdate = accidentRow[0]
+     comparedate = int(accidentdate[:accidentdate.find('/')])
+     if comparedate>=3 and comparedate<=5:
+          accidentdate = timeseason[0]
+     elif comparedate>=6 and comparedate<=8:
+          accidentdate = timeseason[1]
+     elif comparedate>=9 and comparedate<=11:
+          accidentdate = timeseason[2]
+     elif comparedate==12 or comparedate<=2:
+          accidentdate = timeseason[3]
+     #Time Comparison Code
+     accidenttime = accidentRow[1]
      comparetime = int(accidenttime[:accidenttime.find(':')])
      if comparetime>=4 and comparetime<=11:
           accidenttime = timecat[0]
@@ -58,30 +57,65 @@ def processAccidentRow(accidentDataFrame):
           accidenttime = timecat[2]
      if comparetime>21 or comparetime<=4:
           accidenttime = timecat[3]
-     return (accidentdate,accidenttime,borough,zipcode,latitude,longitude,onstreet,crossstreet,personsinjured,personskilled,pedestriansinjured,pedestrianskilled,cyclistsinjured,cyclistskilled,motoristsinjured,motoristskilled,v1factor,v2factor,v1type,v2type)
+     #Location Comparison
+     latacdnt = float(accidentRow[4])
+     lonacdnt = float(accidentRow[5])
+     d1min = sys.maxint
+     d2min = sys.maxint
+     drow = None
+     phi1 = deg2rad(latacdnt)
+     for eachrow in streetcollection:
+          startx = float(eachrow[0])
+          starty = float(eachrow[1])
+          phi2 = deg2rad(startx)
+          endx = float(eachrow[2])
+          endy = float(eachrow[3])
+          R = 6371
+          dLat = deg2rad(startx-latacdnt)
+          dLon = deg2rad(starty-lonacdnt) 
+          a = math.sin(dLat/2) * math.sin(dLat/2) + math.cos(phi1) * math.cos(phi2) * math.sin(dLon/2) * math.sin(dLon/2) 
+          c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a)) 
+          d1 = R * c
+          phi2 = deg2rad(endx)
+          dLat = deg2rad(endx-latacdnt)
+          dLon = deg2rad(endy-lonacdnt) 
+          a = math.sin(dLat/2) * math.sin(dLat/2) + math.cos(phi1) * math.cos(phi2) * math.sin(dLon/2) * math.sin(dLon/2) 
+          c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a)) 
+          d2 = R * c
+          if d1<d1min:
+               d1min = d1
+               drow = (accidentdate,accidenttime,str(accidentRow[2]),str(accidentRow[3]),accidentRow[4],accidentRow[5],str(accidentRow[6]),str(accidentRow[7]),accidentRow[8],accidentRow[9],accidentRow[10],accidentRow[11],accidentRow[12],accidentRow[13],accidentRow[14],accidentRow[15],str(accidentRow[16]),str(accidentRow[17]),str(accidentRow[18]),str(accidentRow[19]),str(eachrow[9]))
+          if d2<d2min:
+               d2min = d2               
+               drow = (accidentdate,accidenttime,str(accidentRow[2]),str(accidentRow[3]),accidentRow[4],accidentRow[5],str(accidentRow[6]),str(accidentRow[7]),accidentRow[8],accidentRow[9],accidentRow[10],accidentRow[11],accidentRow[12],accidentRow[13],accidentRow[14],accidentRow[15],str(accidentRow[16]),str(accidentRow[17]),str(accidentRow[18]),str(accidentRow[19]),str(eachrow[9]))
+     if d1min<=threshold or d2min<=threshold:
+          return drow 
+     else: return None
+
+# distres = accidentDataFrame.rdd.map(partial(modifyAndJoin,street=streetbroadcast,threshold=0.3))
+distres = accidentDataFrame.rdd.map(partial(modifyAndJoin,threshold=0.3))
+distres = distres.filter(lambda x: x is not None)
+#distres.foreach(print)
+#distres.saveAsTextFile('sendtoml')
+
+mldata = sc.textFile('ml.txt').filter(lambda x: x is not None).map(lambda x: pre_cluster_prepare(x))
+
+groupv1type = mldata.groupBy(lambda word: str(word[5]))
+print([(groupv1type[0],[i for i in groupv1type[1]]) for groupv1type in mldata.collect()])
 
 
+#ML CLUSTERING START
+#load the text file that contains the join of two datasets
 
-#a = []
-#accidentDataFrame.foreach(processAccidentRow(x))
-#streetDataFrame.foreach(lambda x: processStreetRow(x))
-#streetDataFrame.foreach(processStreetRow(x))
+ml_prepared = map(lambda x: pre_cluster_prepare(x))
+kmode_input = ml_prepared.collect();
 
+from kmodes import kprototypes
+import numpy as np
 
-
-accidentdatardd = accidentDataFrame.rdd.map(processAccidentRow)
-streetdatardd = streetDataFrame.rdd.map(processStreetRow)
-streetbroadcast = sc.broadcast(streetdatardd.collect())
-#combinedrdd = accidentdatardd.cartesian(streetdatardd)
-
-
-
-# update accident set accidenttime = 
-# (case
-# when cast(substring_index(accidenttime, ":", 1) as int) >=4 and  cast(substring_index(accidenttime, ":", 1) as int)<=11 THEN 'morning'
-# when cast(substring_index(accidenttime, ":", 1) as int) >11 and  cast(substring_index(accidenttime, ":", 1) as int)<=15 THEN 'afternoon'
-# when cast(substring_index(accidenttime, ":", 1) as int) >15 and  cast(substring_index(accidenttime, ":", 1) as int)<=21 THEN 'evening'
-# when cast(substring_index(accidenttime, ":", 1) as int) >21 or  cast(substring_index(accidenttime, ":", 1) as int)<=4 THEN 'latenight'
-# else accidenttime
-# end
-# )
+X= np.array(kmode_input)
+kproto = kprototypes.KPrototypes(n_clusters=4, init='Cao', verbose=2)
+clusters = kproto.fit_predict(X, categorical=[0,1,2,5,6])
+print(kproto.cluster_centroids_)
+print(kproto.cost_)
+print(kproto.n_iter_)
