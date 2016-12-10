@@ -2,17 +2,20 @@ from __future__ import print_function
 from pyspark import SparkConf, SparkContext
 from pyspark import HiveContext
 from functools import partial
+from pprint import pprint
 import sys
 import math
+
+import subprocess as sp
+sp.call('clear',shell=True)
 
 conf = SparkConf().setAppName('bdanalytic').setMaster('local[*]')
 sc = SparkContext(conf=conf)
 
-# boroughcat = ['manhattan','brooklyn','bronx','queens','staten island']
+num_clusters = 6
+
 timecat = ['morning', 'afternoon', 'evening', 'latenight']
 timeseason = ['spring','summer','fall','winter']
-# v1typecat = ['passenger vehicle,motorcycle,van,other,unknown,bus,taxi,bicycle,pick-up truck,livery vehicle,ambulance,fire truck,scooter,pedicab']
-# v1factorcat = ['driver inattention/distraction','failure to yield right-of-way','fatigued/drowsy','turning improperly','driver inexperience','pavement slippery','alcohol involvement','view obstructed/limited','aggressive driving/road rage','brakes defective','obstruction/debris','pavement defective','lane marking improper/inadequate']
 
 accidentDataFrame = HiveContext(sc).sql('select * from accident')
 streetDataFrame = HiveContext(sc).sql('select * from street')
@@ -31,8 +34,16 @@ streetcollection = streetDataFrame.rdd.collect()
 
 def pre_cluster_prepare(row_data):
      split = row_data.split(',')
-     #print(split[1],split[2],split[6],split[8],split[9], split[20])
-     return(split[1],split[2],split[6],split[8],split[9], split[16],split[20])
+     v1factor = str(split[16]).strip(",' ")
+     v1type = str(split[18]).strip(",' ")
+     if v1factor == 'unknown': #remove for FP growth algorithm- needs unique items in transaction
+          #v1factor = 'unknownfactor'
+          return # we dont want unknowns since it does not generate good rules
+     if v1type == 'unknown': #remove for FP growth algorithm- needs unique items in transaction
+          #v1type = 'unknowntype'
+          return # we dont want unknowns since it does not generate good rules
+     #season, time of day , borough, street, probable cause of accident, vehicle type, street rating, injured, killed
+     return [str(split[0]).strip(",' "),str(split[1]).strip(",' "),str(split[2]).strip(",' "),str(split[6]).strip(",' "),v1factor,v1type,str(split[20]).strip(",' "),int(split[9]),int(split[10])]
 
 def modifyAndJoin(accidentRow,threshold):
      #Season Comparison Code
@@ -98,24 +109,62 @@ distres = distres.filter(lambda x: x is not None)
 #distres.foreach(print)
 #distres.saveAsTextFile('sendtoml')
 
-mldata = sc.textFile('ml.txt').filter(lambda x: x is not None).map(lambda x: pre_cluster_prepare(x))
+raw_data = sc.textFile('ml.txt').filter(lambda x: x is not None)
 
-groupv1type = mldata.groupBy(lambda word: str(word[5]))
-print([(groupv1type[0],[i for i in groupv1type[1]]) for groupv1type in mldata.collect()])
+# Group by v1 factor 
+# Prints the top 5 factors for accident in NYC
+groupv1factor = raw_data.groupBy(lambda word: str(word.split(',')[16])).collect()
+grouped_v1_factor = [(group[0],len(group[1])) for group in groupv1factor]
+grouped_v1_factor = sorted(grouped_v1_factor,key = lambda x: x[1], reverse = True)
+pprint(grouped_v1_factor[1:6]) #removing unknown
+
+
+# Group by v1 factor
+# Prints the top 5 types of vehicles involved  in an accident in NYC
+groupv1type = raw_data.groupBy(lambda word: str(word.split(',')[18])).collect()
+grouped_v1_types = [(group[0],len(group[1])) for group in groupv1type]
+grouped_v1_types = sorted(grouped_v1_types,key = lambda x: x[1], reverse = True)
+pprint(grouped_v1_types[0:5]) 
 
 
 #ML CLUSTERING START
 #load the text file that contains the join of two datasets
 
-ml_prepared = map(lambda x: pre_cluster_prepare(x))
-kmode_input = ml_prepared.collect();
+ml_prepared = raw_data.map(lambda x: pre_cluster_prepare(x))
+ml_prepared = ml_prepared.filter(lambda x: x is not None) # added since none rows can be returned
+kmode_input = ml_prepared.collect()
 
 from kmodes import kprototypes
+from kmodes import kmodes
 import numpy as np
 
 X= np.array(kmode_input)
-kproto = kprototypes.KPrototypes(n_clusters=4, init='Cao', verbose=2)
-clusters = kproto.fit_predict(X, categorical=[0,1,2,5,6])
-print(kproto.cluster_centroids_)
-print(kproto.cost_)
-print(kproto.n_iter_)
+kproto = kprototypes.KPrototypes(n_clusters=num_clusters, init='Cao', verbose=2)
+# kmodes_cao = kmodes.KModes(n_clusters=4, init='Cao', verbose=1)
+# clusters = kmodes_cao.fit(X)
+# print(clusters)
+# print('k-modes (Cao) centroids:')
+# print(kmodes_cao.cluster_centroids_)
+# Print training statistics
+# print('Final training cost: {}'.format(kmodes_cao.cost_))
+# print('Training iterations: {}'.format(kmodes_cao.n_iter_))
+#season, time of day , borough, street, probable cause of accident, vehicle type, street rating
+clusters = kproto.fit_predict(X, categorical=[0,1,2,3,4,5,6])
+# pprint(kproto.cluster_centroids_)
+# pprint(kproto.cost_)
+# pprint(kproto.n_iter_)
+# print(clusters)
+
+# create all files
+list_of_files=[]
+for i in range(num_clusters):
+     file = open('cluster_'+str(i)+'.csv', 'w')
+     list_of_files.append(file)
+
+# store all clusters
+for idx,element in enumerate(clusters):
+     row = kmode_input[idx]
+     list_of_files[int(element)].write('  '.join([str(x).replace("'","") for x in row[0:len(row)-2]]) + '\n')
+
+for i in range(num_clusters):
+     list_of_files[i].close()
