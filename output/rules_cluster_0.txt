@@ -1,0 +1,23 @@
+cluster 0
+
+[good], 9931
+[winter], 7456
+[winter,good], 6065
+[passenger vehicle], 6826
+[passenger vehicle,winter], 4158
+[passenger vehicle,winter,good], 3584
+[passenger vehicle,good], 6090
+[manhattan], 6766
+[manhattan,winter], 3836
+[manhattan,good], 5242
+[evening], 6482
+[evening,passenger vehicle], 3765
+[evening,good], 5618
+[driver inattention/distraction], 5024
+[driver inattention/distraction,good], 4008
+
+
+[passenger vehicle] => [good], 0.8921769704072663                               
+[evening] => [good], 0.8667078062326442
+[winter] => [good], 0.8134388412017167
+[passenger vehicle,winter] => [good], 0.8619528619528619

@@ -1,0 +1,33 @@
+cluster_3
+
+[good], 2612
+[brooklyn], 2198
+[brooklyn,good], 2055
+[passenger vehicle], 1926
+[passenger vehicle,brooklyn], 1517
+[passenger vehicle,brooklyn,good], 1433
+[passenger vehicle,good], 1808
+[morning], 1749
+[morning,passenger vehicle], 1225
+[morning,passenger vehicle,brooklyn], 886
+[morning,passenger vehicle,good], 1127
+[morning,brooklyn], 1251
+[morning,brooklyn,good], 1126
+[morning,good], 1571
+[summer], 1513
+[summer,passenger vehicle], 924
+[summer,passenger vehicle,good], 866
+[summer,brooklyn], 1051
+[summer,brooklyn,good], 959
+[summer,good], 1395
+
+[passenger vehicle] => [good], 0.9387331256490135
+[morning] => [good], 0.8982275586049171
+[brooklyn] => [good], 0.934940855323021
+[summer,brooklyn] => [good], 0.9124643196955281
+[morning,brooklyn] => [good], 0.9000799360511591
+[summer] => [good], 0.922009253139458
+[summer,passenger vehicle] => [good], 0.9372294372294372
+[passenger vehicle,brooklyn] => [good], 0.944627554383652
+[morning,passenger vehicle] => [good], 0.92
+

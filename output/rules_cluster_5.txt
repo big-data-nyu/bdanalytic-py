@@ -1,0 +1,17 @@
+cluster_5
+
+[fair], 6140
+[passenger vehicle], 4653
+[passenger vehicle,fair], 3437
+[evening], 4564
+[evening,passenger vehicle], 2736
+[evening,fair], 3201
+[queens], 3738
+[queens,passenger vehicle], 2492
+[queens,fair], 2652
+[summer], 3050
+[other vehicular], 2524
+
+[passenger vehicle] => [fair], 0.7386632280249301
+[evening] => [fair], 0.7013584574934268
+[queens] => [fair], 0.709470304975923

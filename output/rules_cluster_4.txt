@@ -1,0 +1,42 @@
+cluster_4
+
+[good], 2933
+[queens], 2272
+[queens,good], 2070
+[passenger vehicle], 2252
+[passenger vehicle,queens], 1738
+[passenger vehicle,queens,good], 1613
+[passenger vehicle,good], 2120
+[afternoon], 2099
+[afternoon,passenger vehicle], 1402
+[afternoon,passenger vehicle,queens], 1046
+[afternoon,passenger vehicle,queens,good], 975
+[afternoon,passenger vehicle,good], 1326
+[afternoon,queens], 1431
+[afternoon,queens,good], 1305
+[afternoon,good], 1966
+[spring], 1747
+[spring,passenger vehicle], 1150
+[spring,passenger vehicle,good], 1031
+[spring,queens], 963
+[spring,good], 1558
+[driver inattention/distraction], 1563
+[driver inattention/distraction,passenger vehicle], 1086
+[driver inattention/distraction,passenger vehicle,good], 999
+[driver inattention/distraction,queens], 1238
+[driver inattention/distraction,queens,good], 1111
+[driver inattention/distraction,good], 1429
+
+
+[afternoon,queens] => [good], 0.9119496855345912
+[driver inattention/distraction,passenger vehicle] => [good], 0.919889502762431
+[passenger vehicle] => [good], 0.9413854351687388
+[afternoon] => [good], 0.9366364935683659
+[afternoon,passenger vehicle] => [good], 0.9457917261055635
+[spring,passenger vehicle] => [good], 0.8965217391304348
+[spring] => [good], 0.8918145392100744
+[driver inattention/distraction] => [good], 0.9142674344209852
+[driver inattention/distraction,queens] => [good], 0.8974151857835219
+[afternoon,passenger vehicle,queens] => [good], 0.9321223709369025
+[passenger vehicle,queens] => [good], 0.928078250863061
+[queens] => [good], 0.9110915492957746

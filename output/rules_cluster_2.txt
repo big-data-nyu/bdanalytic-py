@@ -1,0 +1,23 @@
+cluster_2
+[fair], 3541
+[fall], 2813
+[fall,fair], 2021
+[passenger vehicle], 2797
+[passenger vehicle,fall], 1887
+[passenger vehicle,fair], 2104
+[brooklyn], 2533
+[brooklyn,passenger vehicle], 1655
+[brooklyn,fall], 1458
+[brooklyn,fair], 1777
+[afternoon], 2508
+[afternoon,passenger vehicle], 1489
+[afternoon,fall], 1437
+[afternoon,fair], 1875
+[driver inattention/distraction], 1963
+[driver inattention/distraction,fair], 15
+
+[fall] => [fair], 0.7184500533238536
+[passenger vehicle] => [fair], 0.7522345370039328
+[brooklyn] => [fair], 0.7015396762731938
+[afternoon] => [fair], 0.7476076555023924
+[driver inattention/distraction] => [fair], 0.7784004075394804

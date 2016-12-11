@@ -1,0 +1,17 @@
+cluster 1
+
+[good], 7383
+[fall], 4964
+[fall,good], 4318
+[sport utility / station wagon], 4759
+[sport utility / station wagon,good], 3975
+[morning], 4564
+[morning,good], 3691
+[queens], 3212
+[queens,good], 2822
+[manhattan], 2575
+
+[fall] => [good], 0.8698630136986302
+[morning] => [good], 0.8087204206836108
+[sport utility / station wagon] => [good], 0.835259508300063
+[queens] => [good], 0.8785803237858032
