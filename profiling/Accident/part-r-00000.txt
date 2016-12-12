@@ -1,0 +1,143 @@
+2012	66216
+2013	134556
+2014	118332
+2015	161938
+2016	50935
+bronx	61689
+brooklyn	153397
+manhattan	144180
+queens	145858
+staten island	26853
+tot_rows	531977
+v1factor_accelerator defective	201
+v1factor_aggressive driving/road rage	1715
+v1factor_alcohol involvement	4179
+v1factor_animals action	239
+v1factor_backing unsafely	15824
+v1factor_brakes defective	1275
+v1factor_cell phone (hand-held)	54
+v1factor_cell phone (hands-free)	140
+v1factor_driver inattention/distraction	64861
+v1factor_driver inexperience	6681
+v1factor_driverless/runaway vehicle	4
+v1factor_drugs (illegal)	276
+v1factor_failure to keep right	945
+v1factor_failure to yield right-of-way	24943
+v1factor_fatigued/drowsy	22036
+v1factor_fell asleep	663
+v1factor_following too closely	771
+v1factor_glare	987
+v1factor_headlights defective	43
+v1factor_illness	1656
+v1factor_lane marking improper/inadequate	227
+v1factor_lost consciousness	13226
+v1factor_obstruction/debris	789
+v1factor_other electronic device	1494
+v1factor_other lighting defects	36
+v1factor_other vehicular	19476
+v1factor_outside car distraction	5219
+v1factor_oversized vehicle	3570
+v1factor_passenger distraction	3032
+v1factor_passing or lane usage improper	482
+v1factor_pavement defective	494
+v1factor_pavement slippery	5298
+v1factor_pedestrian/bicyclist/other pedestrian error/confusion	136
+v1factor_physical disability	6580
+v1factor_prescription medication	11245
+v1factor_reaction to other uninvolved vehicle	1046
+v1factor_shoulders defective/improper	19
+v1factor_steering failure	433
+v1factor_tire failure/inadequate	311
+v1factor_tow hitch defective	58
+v1factor_traffic control device improper/non-working	257
+v1factor_traffic control disregarded	5994
+v1factor_turning improperly	11638
+v1factor_unknown	290297
+v1factor_unsafe lane changing	355
+v1factor_unsafe speed	592
+v1factor_view obstructed/limited	2150
+v1factor_windshield inadequate	30
+v1type_ambulance	1645
+v1type_bicycle	650
+v1type_bus	10331
+v1type_fire truck	587
+v1type_large com veh(6 or more tires)	8614
+v1type_livery vehicle	7002
+v1type_motorcycle	2795
+v1type_other	16436
+v1type_passenger vehicle	286569
+v1type_pedicab	20
+v1type_pick-up truck	7947
+v1type_scooter	202
+v1type_small com veh(4 tires)	9386
+v1type_sport utility / station wagon	120774
+v1type_taxi	25140
+v1type_unknown	15659
+v1type_van	18220
+v2factor_accelerator defective	23
+v2factor_aggressive driving/road rage	424
+v2factor_alcohol involvement	413
+v2factor_animals action	18
+v2factor_backing unsafely	2405
+v2factor_brakes defective	121
+v2factor_cell phone (hand-held)	17
+v2factor_cell phone (hands-free)	24
+v2factor_driver inattention/distraction	17900
+v2factor_driver inexperience	2104
+v2factor_drugs (illegal)	71
+v2factor_failure to keep right	172
+v2factor_failure to yield right-of-way	4637
+v2factor_fatigued/drowsy	5446
+v2factor_fell asleep	262
+v2factor_following too closely	116
+v2factor_glare	147
+v2factor_headlights defective	13
+v2factor_illness	326
+v2factor_lane marking improper/inadequate	125
+v2factor_lost consciousness	3616
+v2factor_obstruction/debris	147
+v2factor_other electronic device	436
+v2factor_other lighting defects	10
+v2factor_other vehicular	11750
+v2factor_outside car distraction	1006
+v2factor_oversized vehicle	639
+v2factor_passenger distraction	724
+v2factor_passenger vehicle	23
+v2factor_passing or lane usage improper	91
+v2factor_pavement defective	47
+v2factor_pavement slippery	1261
+v2factor_pedestrian/bicyclist/other pedestrian error/confusion	32
+v2factor_physical disability	1597
+v2factor_prescription medication	2230
+v2factor_reaction to other uninvolved vehicle	286
+v2factor_shoulders defective/improper	5
+v2factor_sport utility / station wagon	12
+v2factor_steering failure	40
+v2factor_tire failure/inadequate	37
+v2factor_tow hitch defective	5
+v2factor_traffic control device improper/non-working	157
+v2factor_traffic control disregarded	1702
+v2factor_turning improperly	2946
+v2factor_unknown	467684
+v2factor_unsafe lane changing	69
+v2factor_unsafe speed	127
+v2factor_van	1
+v2factor_view obstructed/limited	530
+v2factor_windshield inadequate	3
+v2type_ambulance	764
+v2type_bicycle	14899
+v2type_bus	8465
+v2type_fire truck	406
+v2type_large com veh(6 or more tires)	7957
+v2type_livery vehicle	5496
+v2type_motorcycle	2525
+v2type_other	15506
+v2type_passenger vehicle	215237
+v2type_pedicab	83
+v2type_pick-up truck	7397
+v2type_scooter	186
+v2type_small com veh(4 tires)	8964
+v2type_sport utility / station wagon	91544
+v2type_taxi	21548
+v2type_unknown	114857
+v2type_van	16107

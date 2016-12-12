@@ -1,0 +1,9 @@
+beeline -u jdbc:hive2://quickstart:10000/default -n cloudera -d org.apache.hive.jdbc.HiveDriver
+
+create external table street (startx string, starty string, endx string, endy string, length int, segmentid int,width int, usageclass string, rating int, wordrating string, isvalid tinyint) row format delimited fields terminated by ',';
+
+LOAD DATA LOCAL INPATH 'Street_Data_ToHadoop.csv' OVERWRITE INTO TABLE street;
+
+create external table accident(accidentdate string, accidenttime string, borough string, zipcode int, latitude double, longitude double, onstreet string, crossstreet string, personsinjured int, personskilled int, pedestriansinjured int,pedestrianskilled int, cyclistsinjured int, cyclistskilled int, motoristsinjured int, motoristskilled int, v1factor string, v2factor string, v1type string, v2type string) row format delimited fields terminated by ',';
+
+LOAD DATA LOCAL INPATH 'Accident_Data_ToHadoop.csv' OVERWRITE INTO TABLE accident

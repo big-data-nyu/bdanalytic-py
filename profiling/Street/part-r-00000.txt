@@ -1,0 +1,12 @@
+fair	20149
+good	49439
+length_max	4980
+length_min	8
+local	39928
+poor	516
+primary	6868
+secondary	9655
+tot_rows	70104
+unknown	13653
+width_max	900
+width_min	0
