@@ -119,7 +119,7 @@ raw_data = sc.textFile('ml.txt').filter(lambda x: x is not None)
 groupv1factor = raw_data.groupBy(lambda word: str(word.split(',')[16])).collect()
 grouped_v1_factor = [(group[0],len(group[1])) for group in groupv1factor]
 grouped_v1_factor = sorted(grouped_v1_factor,key = lambda x: x[1], reverse = True)
-pprint(grouped_v1_factor[1:6]) #removing unknown
+pprint(grouped_v1_factor[0:5]) #removing unknown
 
 
 # Group by v1 factor
