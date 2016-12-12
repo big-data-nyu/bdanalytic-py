@@ -1,7 +1,7 @@
 #Analysis of road accidents in NYC and their contributing factors.
 #Big Data Fall 2016
 
-The analytic is available in
+The analytic and data set is available in
 https://github.com/big-data-nyu/bdanalytic-py
 
 ##Below is the folder structure of our project.
