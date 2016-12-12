@@ -6,9 +6,9 @@
 
 ![Alt text](tree.png?raw=true "Tree")
 
-src/bd_analytic.py loads the data from Hive, performs a Map based on location and runs the K-mode 
+### src/bd_analytic.py loads the data from Hive, performs a Map based on location and runs the K-mode 
 clustering algorithm.
-src/bd_rule_mining.scala loads the individual clusters from HDFS and runs FPGrowth and Association
+### src/bd_rule_mining.scala loads the individual clusters from HDFS and runs FPGrowth and Association
 Rule mining MLlib algorithms to identify Frequently appearing patters and rules.
 
 
