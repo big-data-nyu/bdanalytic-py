@@ -4,6 +4,8 @@
 
 ##Below is the folder structure of our project.
 
+![Alt text](tree.png?raw=true "Tree")
+
 ├── README.md
 ├── dataset			#This is the input data set.
 │   ├── Accident_Data_ToHadoop.csv
